@@ -14,9 +14,7 @@ git clone https://github.com/RePAIRProject/2D-baselines
 cd 2D-baselines
 ```
 
-2. Download the repair dataset 
-
-Download the [repair dataset](https://drive.google.com/drive/folders/1G4ffmH5lxEqITZMNValiModByYUAO6yk), extract the zip, and put it in the root directory of the project. 
+2. Download the [repair dataset](https://drive.google.com/drive/folders/1G4ffmH5lxEqITZMNValiModByYUAO6yk), extract the zip, and put it in the root directory of the project. 
 
 3. Download supplementary for the geometric greedy solver
 Download from [springs_server.zip](https://drive.google.com/uc?export=download&id=1ELKJnEcggrtusnFRzAwthtpC-QVgryW1), extract the zip, and put the extracted folder under the geometric greedy solver directory.
