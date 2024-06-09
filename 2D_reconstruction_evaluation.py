@@ -59,12 +59,25 @@ def find_largest_fragment(input_dir):
 
     return largest_image
 
-def read_transformations(transformations_dir):
+def read_transformations(transformations_dir, make_non_negative=False):
     """
     Read transformations from a csv file, and return a pandas dataframe of the form:
     | rpf (piece filename) | x (translation x) | y (translation y) | rot (rotation) | 
     """
     transformations = pd.read_csv(transformations_dir)
+
+    if make_non_negative:
+        # get minimum value of X and Y
+        min_x = transformations['x'].min()
+        min_y = transformations['y'].min()
+
+        # subtract the minimum value from X and Y
+        if min_x < 0:
+            transformations['x'] = transformations['x'] + abs(min_x)
+
+        if min_y < 0:
+            transformations['y'] = transformations['y'] + abs(min_y)
+
     return transformations
 
 
@@ -260,8 +273,8 @@ def calculate_position_score(pieces_dir, transformations_dir, gt_transformations
     ::param log: whether to print the intermediate results or not
     """
 
-    transformations = read_transformations(transformations_dir)
-    gt_transformations = read_transformations(gt_transformations_dir)
+    transformations = read_transformations(transformations_dir, make_non_negative=True)
+    gt_transformations = read_transformations(gt_transformations_dir, make_non_negative=True)
 
     # Initialize the shared canvas with the largest piece
 
@@ -402,31 +415,24 @@ if __name__ == "__main__":
             os.makedirs(scores_dir)
     scores_df = pd.DataFrame(columns=['object_name', 'Q_pos', 'RMSE_rot', 'RMSE_translation'])
 
-    # get all filenames within dir "g2_2d_csv" but without the ".csv" extension
-    object_names = [os.path.splitext(filename)[0] for filename in os.listdir("test_set_gt")]
+        object_names = [os.path.splitext(filename)[0] for filename in os.listdir(ground_truth_dir)]
 
     for obj in object_names:
         pieces_dir = os.path.join(pieces_base_dir, obj)
         results_csv = os.path.join(results_dir, f"{obj}.csv")
         ground_truth_csv = os.path.join(ground_truth_dir, f"{obj}.csv")
 
-        q_pos = 0
-        rmse_values = {}
-        rmse_values['RMSE_rot'] = 0
-        rmse_values['RMSE_translation'] = 0
         try:
             # calculate Q_pos
             q_pos = calculate_position_score(pieces_dir, results_csv, ground_truth_csv)
             # calculate RMSE
             rmse_values = calculate_rmse_with_anchor(pieces_dir, results_csv, ground_truth_csv)
             # save the scores in a dataframe
+            new_row = pd.DataFrame([{'object_name': obj, 'Q_pos': q_pos, 'RMSE_rot': rmse_values['RMSE_rot'], 'RMSE_translation': rmse_values['RMSE_translation']}])
+            scores_df = pd.concat([scores_df, new_row], ignore_index=True)
         except Exception as e:
             print(f"Error calculating scores for object {obj}: {e}")
-        new_row = pd.DataFrame([{'object_name': obj, 'Q_pos': q_pos, 'RMSE_rot': rmse_values['RMSE_rot'], 'RMSE_translation': rmse_values['RMSE_translation']}])
-        scores_df = pd.concat([scores_df, new_row], ignore_index=True)
-        # rewrite the above line but in a way that will not show the warning: c:\Users\Ofir\OneDrive - post.bgu.ac.il\RePAIR\Code\Fragment_Registration_Based_Global_Evaluation\2D_reconstruction_evaluation.py:422: FutureWarning: The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
-
-
+            
     # fill in blank values with 0
     scores_df.fillna(0, inplace=True)
 
