@@ -1,0 +1,8 @@
+pandas
+numpy 
+matplotlib
+Pillow
+shapely
+networkx
+urllib3
+scipy

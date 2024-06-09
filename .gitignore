@@ -1,0 +1,7 @@
+.venv/
+.vscode/
+geometric greedy solver/.vscode/
+REPAIR_DATASET_NIPS_24/
+**/__pycache__/**
+*.pyc
+geometric greedy solver/springs_server
