@@ -16,13 +16,18 @@ def get_all_csv_files(directory):
             csv_files.append(os.path.join(directory, filename))
     return csv_files
 
-def adjust_transformations(input_csv, output_csv, flip_xy=True, make_non_negative=True):
+def adjust_transformations(input_csv, output_csv, flip_xy=True, make_non_negative=False, additional_filename_ext=""):
+    # replace the X column's values and the Y column's values:
+    # Read the CSV file with transformations
     transformations_df = pd.read_csv(input_csv)
     if flip_xy:
         temp = transformations_df['x']
         transformations_df['x'] = transformations_df['y']
         transformations_df['y'] = temp
         transformations_df['rot'] = transformations_df['rot']
+
+    if additional_filename_ext != "":
+        transformations_df['rpf'] = transformations_df['rpf'].apply(lambda x: x.split('.')[0] + additional_filename_ext)
 
     if make_non_negative:
         # get minimum value of X and Y
@@ -274,7 +279,7 @@ def calculate_position_score(pieces_dir, transformations_dir, gt_transformations
     """
 
     transformations = read_transformations(transformations_dir, make_non_negative=True)
-    gt_transformations = read_transformations(gt_transformations_dir, make_non_negative=True)
+    gt_transformations = read_transformations(gt_transformations_dir)
 
     # Initialize the shared canvas with the largest piece
 
