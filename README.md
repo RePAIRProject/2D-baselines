@@ -14,7 +14,7 @@ For more details about the RePAIR dataset paper and baselines, visit the RePAIR 
 ### Baseline Solvers
 1. **Geometric Greedy Solver**: A baseline solver that iteratively matches fragments based on their geometric properties using a greedy algorithm.
 2. **Genetic Solver**: A solver employing a genetic optimization algorithm that minimizes the bounding box area and overlap errors for fragment arrangement.
-3. Derech et al. (*"Solving Archaeological Puzzles"*, Pattern Recognition, 119:108065, 2021): We use the code provided by the author. The results of the method are referenced in the paper for comparison purposes. For more details, refer to their [paper](https://doi.org/10.1016/j.patcog.2021.108065) and [code](https://cgm.technion.ac.il/wp-content/uploads/2024/07/Reassembly2d_Sources.zip) from the authors [website](https://cgm.technion.ac.il/publications/).
+3. Derech et al. (*"Solving Archaeological Puzzles"*, Pattern Recognition, 119:108065, 2021): We use the code provided by the author, with minor modifications to its output format to match the format of the solvers above. The results of the method are referenced in the paper for comparison purposes. For more details, refer to their [paper](https://doi.org/10.1016/j.patcog.2021.108065) and [code](https://cgm.technion.ac.il/wp-content/uploads/2024/07/Reassembly2d_Sources.zip) from the authors [website](https://cgm.technion.ac.il/publications/).
 
 ### Evaluation Metrics
 The repository includes evaluation metrics to assess puzzle-solving performance. These metrics account for:
