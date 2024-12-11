@@ -32,9 +32,6 @@ These metrics provide a comprehensive evaluation framework for the quality of pu
 
 ### Steps
 1. Clone the repository:
-   ```bash
-   git clone https://github.com/RePAIRProject/2D-baselines
-   cd 2D-baselines
 ```
 git clone https://github.com/RePAIRProject/2D-baselines
 cd 2D-baselines
