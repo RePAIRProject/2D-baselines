@@ -1,4 +1,4 @@
-# 2D Baseline Solvers for the RePAIR Dataset
+# 2D Baseline Solvers and Evaluation Metrics for the RePAIR Dataset
 
 This repository provides the implementation of two novel 2D baseline solvers and evaluation metrics for the **RePAIR Dataset**, introduced in the paper:
 
