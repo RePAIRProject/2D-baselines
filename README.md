@@ -1,60 +1,144 @@
-# RePAIR Example Repository
-This repository includes the 2D baselines solvers. 
+# 2D Baseline Solvers for the RePAIR Dataset
 
-# 1) Description
-This is a test repository for demonstration. It has some cool features.
+This repository provides the implementation of two novel 2D baseline solvers and evaluation metrics for the **RePAIR Dataset**, introduced in the paper:
 
-# 2) Installation
-Build/Installation instructions (including requirements and dataset).
-The geometric solver was running in Python 3.9
+**"Re-assembling the Past: The RePAIR Dataset and Benchmark for Realistic 2D and 3D Puzzle Solving"** (to appear in NeurIPS 2024).
 
-1. Clone the repo
+The RePAIR dataset represents a challenging benchmark for computational puzzle-solving, featuring realistic fragment reassembly scenarios based on archaeological fresco fragments from the Pompeii Archaeological Park. These solvers and metrics serve as benchmarks for evaluating the performance of computational methods in solving complex 2D puzzles with irregular and eroded fragments.
+
+---
+
+## Overview
+
+### Baseline Solvers
+1. **Geometric Greedy Solver**: A baseline solver that iteratively matches fragments based on their geometric properties using a greedy algorithm.
+2. **Genetic Solver**: A solver employing a genetic optimization algorithm that minimizes the bounding box area and overlap errors for fragment arrangement.
+
+### Evaluation Metrics
+The repository also includes evaluation metrics to assess puzzle-solving performance. These metrics account for:
+- **Geometric Alignment**: Evaluating the accuracy of fragment positioning (e.g., translation and rotation errors).
+- **Neighbor Consistency**: Assessing the accuracy of matching neighboring fragments using a ground-truth mating graph.
+
+---
+
+## Installation
+
+### Requirements
+- Python 3.9 or later
+- A Windows machine (required for the Geometric Greedy Solver)
+
+### Steps
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/RePAIRProject/2D-baselines
+   cd 2D-baselines
 ```
 git clone https://github.com/RePAIRProject/2D-baselines
 cd 2D-baselines
 ```
 
-2. Download the [repair dataset](https://drive.google.com/drive/folders/1G4ffmH5lxEqITZMNValiModByYUAO6yk), extract the zip, and put it in the root directory of the project. 
+2. Download the [RePAIR dataset](https://drive.google.com/drive/folders/1G4ffmH5lxEqITZMNValiModByYUAO6yk), extract it, and place it in the root directory of the project.
 
-3. Download supplementary for the geometric greedy solver
-Download from [springs_server.zip](https://drive.google.com/uc?export=download&id=1ELKJnEcggrtusnFRzAwthtpC-QVgryW1), extract the zip, and put the extracted folder under the geometric greedy solver directory.
+3. For the Geometric Greedy Solver:
+   - Download the supplementary files from [springs_server.zip](https://drive.google.com/uc?export=download&id=1ELKJnEcggrtusnFRzAwthtpC-QVgryW1).
+   - Extract and place the folder under the *geometric greedy solver* directory.
 
-4. Install python libraries
+4. Install Python dependencies:
 ```
 pip install -r  requirements.txt
 ```
 
-# 3) Usage
+## Usage
 
-## Geometric greedy solver
-To run the sovler, you would need a Windows machine (10\11).
+### Geometric Greedy Solver
+1. **Start the server**:
+   ```
+   "geometric greedy solver\start_springs_server.bat"
+   ```
+
+2. **Run the solver**:
+   ```
+   python "geometric greedy solver"/main.py --group <GROUP_IDENTIFIER> --output_path <CSV_PATH>
+   ```
+   Example:
+   ```
+   python "geometric greedy solver"/main.py --group RPobj_g1_o0001 --output_path results/RPobj_g1_o0001.txt
+   ```
+
+   **Optional Parameters**:
+   - `--segmenting_curvedness_threshold`: Threshold for segmenting points (range: (0,1)).
+   - `--is_debug_final_assembly`: Enables viewing the final reconstruction.
+
+### Genetic Solver
+
+The `genetic_solver.py` script uses a genetic optimization algorithm to solve 2D puzzles. It resizes fragments, processes them with a genetic algorithm, and outputs the reconstructed solution both as a CSV file and an image.
+
+#### Running the Solver
+
+To run the solver, execute the following command:
+```
+python genetic_solver.py --input_dir <INPUT_DIRECTORY> --resize <RESIZE_DIMENSION> --population_size <POPULATION_SIZE> --max_generations <MAX_GENERATIONS> --mutation_rate <MUTATION_RATE> --output_solution <OUTPUT_SOLUTION_CSV> --output_image <OUTPUT_IMAGE_FILE>
+```
+
+#### Example
+```
+python genetic_solver.py --input_dir puzzle_fragments/ --resize 64 --population_size 100 --max_generations 500 --mutation_rate 0.05 --output_solution solution.csv --output_image solution.png
+```
+
+#### Arguments
+- `--input_dir`: Directory containing puzzle fragment images.
+- `--resize`: Dimension to resize fragments for processing (e.g., 64 for 64x64).
+- `--population_size`: Number of individuals in the genetic algorithm population.
+- `--max_generations`: Maximum number of generations for the genetic algorithm.
+- `--mutation_rate`: Probability of mutation during the genetic algorithm process.
+- `--output_solution`: Path to save the output CSV file containing fragment positions and rotations.
+- `--output_image`: Path to save the reconstructed puzzle image.
+
+#### Output
+1. **CSV File**: Contains the reconstructed solution with columns:
+   - `rpf`: Fragment filenames.
+   - `x`, `y`: Fragment positions.
+   - `rot`: Rotation angle in degrees.
+2. **Image File**: A visual representation of the reconstructed puzzle saved as an image.
+
+#### Additional Details
+- **Fragment Resizing**: Fragments are resized to the specified dimension (`--resize`) during processing. The solution's positions are transformed back to the original dimensions before saving.
+- **Rotation Normalization**: Rotation angles are normalized to the range `[0, 360)` in the output.
+- **Canvas Size**: The canvas size for the reconstructed image is automatically set to accommodate all fragments (scaled by a factor of 10 based on the original fragment size).
 
 
-In a new terminal, run the following to initiate the server.
+### Evaluation Metrics
+
+To compute evaluation metrics for some result reconstruction, use the `2D_reconstruction_evaluation.py` script. 
+
+Run the script:
+```
+python 2D_reconstruction_evaluation.py --pieces_dir <PIECES_DIRECTORY> --results_dir <RESULTS_DIRECTORY> --ground_truth_dir <GROUND_TRUTH_DIRECTORY> --scores_dir <SCORES_DIRECTORY>
+```
+
+Example:
+```
+python 2D_reconstruction_evaluation.py --pieces_dir RePAIR_objects/ --results_dir derech_results/ --ground_truth_dir test_set_gt/ --scores_dir scores/
+```
+
+**Arguments**:
+- `--pieces_dir`: Directory containing the puzzle pieces.
+- `--results_dir`: Directory containing the predicted reconstruction results.
+- `--ground_truth_dir`: Directory containing the ground truth data.
+- `--scores_dir`: Directory to save the computed evaluation scores.
+
+To compute the adjacency matrix based evaluation metrics, use the `2D_adjacency_based_evaluation.py` scripts. Since the evaluation relies on function calls, you need to import and use it programmatically in Python.
+
+## Citation
+
+If you use this code in your research, please cite the following paper:
 
 ```
-"geometric greedy solver\start_springs_server.bat"
+@inproceedings{repair2024,
+  title={Re-assembling the Past: The RePAIR Dataset and Benchmark for Realistic 2D and 3D Puzzle Solving},
+  author={Tsesmelis, Theodore and others},
+  booktitle={NeurIPS},
+  year={2024}
+}
 ```
-
-Then, you can run the solver:
-```
-    python "geometric greedy solver"/main.py --group <GROUP_IDENTIFIER> --output_path <CSV_PATH>
-```
-
-Where the following --group is the group identifier  and --output_path is the path to the csv saving the transformations. For example
-
-```
- python "geometric greedy solver"/main.py --group RPobj_g1_o0001 --output_path REPAIR_DATASET_NIPS_24/tmp/RPobj_g1_o0001.txt"
-```
-
-The following parameters are optional: 
-- *--segmenting_curvedness_threshold*: determine the curvedness threshold for the segmenting points. This value should be in (0,1)
-- *--is_debug_final_assembly*: if specified, enables viewing the final reconstruction of the group.
-
-
-# 4) Known Issues
-Bug descriptions.
-
-# 5) Relevant publications
-Some publications.
 
