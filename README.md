@@ -15,9 +15,12 @@ The RePAIR dataset represents a challenging benchmark for computational puzzle-s
 2. **Genetic Solver**: A solver employing a genetic optimization algorithm that minimizes the bounding box area and overlap errors for fragment arrangement.
 
 ### Evaluation Metrics
-The repository also includes evaluation metrics to assess puzzle-solving performance. These metrics account for:
-- **Geometric Alignment**: Evaluating the accuracy of fragment positioning (e.g., translation and rotation errors).
+The repository includes evaluation metrics to assess puzzle-solving performance. These metrics account for:
+- **Q_pos**: A novel metric for evaluating geometric alignment, which measures the shared area (in 2D) between the predicted and ground-truth fragment configurations, weighted by fragment size. This metric is invariant to rigid transformations, ensuring fair evaluation of positional accuracy.
+- **Geometric Alignment**: Evaluating the accuracy of fragment positioning using translation and rotation errors.
 - **Neighbor Consistency**: Assessing the accuracy of matching neighboring fragments using a ground-truth mating graph.
+
+These metrics provide a comprehensive evaluation framework for the quality of puzzle-solving solutions.
 
 ---
 
@@ -47,6 +50,8 @@ cd 2D-baselines
 ```
 pip install -r  requirements.txt
 ```
+
+---
 
 ## Usage
 
@@ -128,6 +133,8 @@ python 2D_reconstruction_evaluation.py --pieces_dir RePAIR_objects/ --results_di
 - `--scores_dir`: Directory to save the computed evaluation scores.
 
 To compute the adjacency matrix based evaluation metrics, use the `2D_adjacency_based_evaluation.py` scripts. Since the evaluation relies on function calls, you need to import and use it programmatically in Python.
+
+---
 
 ## Citation
 
