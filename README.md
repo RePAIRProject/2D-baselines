@@ -5,7 +5,7 @@ This repository provides the implementation of two novel 2D baseline solvers and
 **"Re-assembling the Past: The RePAIR Dataset and Benchmark for Realistic 2D and 3D Puzzle Solving"** (in NeurIPS 2024).
 
 The RePAIR dataset represents a challenging benchmark for computational puzzle-solving, featuring realistic fragment reassembly scenarios based on archaeological fresco fragments from the Pompeii Archaeological Park. These solvers and metrics serve as benchmarks for evaluating the performance of computational methods in solving complex 2D puzzles with irregular and eroded fragments.
-For more details about the RePAIR dataset paper and baselines, visit the RePAIR NeurIPS Project Page [RePAIR Project Page](https://repairproject.github.io/RePAIR_dataset/).
+For more details about the RePAIR dataset paper and baselines, visit the [RePAIR NeurIPS Project Page](https://repairproject.github.io/RePAIR_dataset/).
 
 ---
 
