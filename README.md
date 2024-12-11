@@ -2,9 +2,10 @@
 
 This repository provides the implementation of two novel 2D baseline solvers and evaluation metrics for the **RePAIR Dataset**, introduced in the paper:
 
-**"Re-assembling the Past: The RePAIR Dataset and Benchmark for Realistic 2D and 3D Puzzle Solving"** (to appear in NeurIPS 2024).
+**"Re-assembling the Past: The RePAIR Dataset and Benchmark for Realistic 2D and 3D Puzzle Solving"** (in NeurIPS 2024).
 
 The RePAIR dataset represents a challenging benchmark for computational puzzle-solving, featuring realistic fragment reassembly scenarios based on archaeological fresco fragments from the Pompeii Archaeological Park. These solvers and metrics serve as benchmarks for evaluating the performance of computational methods in solving complex 2D puzzles with irregular and eroded fragments.
+For more details about the RePAIR dataset and the overall project, visit the [RePAIR Project Page](https://repairproject.github.io/RePAIR_dataset/).
 
 ---
 
@@ -13,6 +14,10 @@ The RePAIR dataset represents a challenging benchmark for computational puzzle-s
 ### Baseline Solvers
 1. **Geometric Greedy Solver**: A baseline solver that iteratively matches fragments based on their geometric properties using a greedy algorithm.
 2. **Genetic Solver**: A solver employing a genetic optimization algorithm that minimizes the bounding box area and overlap errors for fragment arrangement.
+
+In addition to these, the paper also employed the Derech et al. solver (Derech et al., "Solving Archaeological Puzzles", 2021). While this solver is not provided in this repository, its results are referenced in the paper for comparison purposes. For more details, refer to:
+
+- Derech, N., Tal, A., and Shimshoni, I., *"Solving Archaeological Puzzles"*, Pattern Recognition, 119:108065, 2021. [https://doi.org/10.1016/j.patcog.2021.108065](https://doi.org/10.1016/j.patcog.2021.108065)
 
 ### Evaluation Metrics
 The repository includes evaluation metrics to assess puzzle-solving performance. These metrics account for:
@@ -133,16 +138,21 @@ To compute the adjacency matrix based evaluation metrics, use the `2D_adjacency_
 
 ---
 
+## Acknowledgements
+
+This project has received funding from the European Union under the Horizon 2020 research and innovation program.
+
+---
+
 ## Citation
 
 If you use this code in your research, please cite the following paper:
 
 ```
 @inproceedings{repair2024,
-  title={Re-assembling the Past: The RePAIR Dataset and Benchmark for Realistic 2D and 3D Puzzle Solving},
-  author={Tsesmelis, Theodore and others},
-  booktitle={NeurIPS},
-  year={2024}
+title={Re-assembling the Past: The RePAIR Dataset and Benchmark for Realistic 2D and 3D Puzzle Solving}, author={Tsesmelis, Theodore and Palmieri, Luca and Khoroshiltseva, Marina and Islam, Adeela and Elkin, Gur and Shahar, Ofir Itzhak and Scarpellini, Gianluca and Fiorini, Stefano and Ohayon, Yaniv and Alal, Nadav and Aslan, Sinem and Moretti, Pietro and Vascon, Sebastiano and Gravina, Elena and Napolitano, Maria Cristina and Scarpati, Giuseppe and Zuchtriegel, Gabriel and Spühler, Alexandra and Fuchs, Michel E. and James, Stuart and Ben-Shahar, Ohad and Pelillo, Marcello and Del Bue, Alessio},
+booktitle={NeurIPS},
+year={2024}
 }
 ```
 
