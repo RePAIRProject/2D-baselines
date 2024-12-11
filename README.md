@@ -5,7 +5,7 @@ This repository provides the implementation of two novel 2D baseline solvers and
 **"Re-assembling the Past: The RePAIR Dataset and Benchmark for Realistic 2D and 3D Puzzle Solving"** (in NeurIPS 2024).
 
 The RePAIR dataset represents a challenging benchmark for computational puzzle-solving, featuring realistic fragment reassembly scenarios based on archaeological fresco fragments from the Pompeii Archaeological Park. These solvers and metrics serve as benchmarks for evaluating the performance of computational methods in solving complex 2D puzzles with irregular and eroded fragments.
-For more details about the RePAIR dataset and the overall project, visit the [RePAIR Project Page](https://repairproject.github.io/RePAIR_dataset/).
+For more details about the RePAIR dataset paper and baselines, visit the RePAIR NeurIPS Project Page [RePAIR Project Page](https://repairproject.github.io/RePAIR_dataset/).
 
 ---
 
@@ -14,8 +14,7 @@ For more details about the RePAIR dataset and the overall project, visit the [Re
 ### Baseline Solvers
 1. **Geometric Greedy Solver**: A baseline solver that iteratively matches fragments based on their geometric properties using a greedy algorithm.
 2. **Genetic Solver**: A solver employing a genetic optimization algorithm that minimizes the bounding box area and overlap errors for fragment arrangement.
-
-In addition to these, the paper also employed the solver developed by Derech et al. (*"Solving Archaeological Puzzles"*, Pattern Recognition, 119:108065, 2021). While this solver is not provided in this repository, its results are referenced in the paper for comparison purposes. For more details, refer to their [paper](https://doi.org/10.1016/j.patcog.2021.108065) or [code](https://cgm.technion.ac.il/publications/).
+3. Derech et al. (*"Solving Archaeological Puzzles"*, Pattern Recognition, 119:108065, 2021): We use the code provided by the author. The results of the method are referenced in the paper for comparison purposes. For more details, refer to their [paper](https://doi.org/10.1016/j.patcog.2021.108065) and [code](https://cgm.technion.ac.il/wp-content/uploads/2024/07/Reassembly2d_Sources.zip) from the authors [website](https://cgm.technion.ac.il/publications/).
 
 ### Evaluation Metrics
 The repository includes evaluation metrics to assess puzzle-solving performance. These metrics account for:
@@ -148,7 +147,8 @@ If you use this code in your research, please cite the following paper:
 
 ```
 @inproceedings{repair2024,
-title={Re-assembling the Past: The RePAIR Dataset and Benchmark for Realistic 2D and 3D Puzzle Solving}, author={Tsesmelis, Theodore and Palmieri, Luca and Khoroshiltseva, Marina and Islam, Adeela and Elkin, Gur and Shahar, Ofir Itzhak and Scarpellini, Gianluca and Fiorini, Stefano and Ohayon, Yaniv and Alal, Nadav and Aslan, Sinem and Moretti, Pietro and Vascon, Sebastiano and Gravina, Elena and Napolitano, Maria Cristina and Scarpati, Giuseppe and Zuchtriegel, Gabriel and Spühler, Alexandra and Fuchs, Michel E. and James, Stuart and Ben-Shahar, Ohad and Pelillo, Marcello and Del Bue, Alessio},
+title={Re-assembling the Past: The RePAIR Dataset and Benchmark for Realistic 2D and 3D Puzzle Solving},
+author={Tsesmelis, Theodore and Palmieri, Luca and Khoroshiltseva, Marina and Islam, Adeela and Elkin, Gur and Shahar, Ofir Itzhak and Scarpellini, Gianluca and Fiorini, Stefano and Ohayon, Yaniv and Alal, Nadav and Aslan, Sinem and Moretti, Pietro and Vascon, Sebastiano and Gravina, Elena and Napolitano, Maria Cristina and Scarpati, Giuseppe and Zuchtriegel, Gabriel and Spühler, Alexandra and Fuchs, Michel E. and James, Stuart and Ben-Shahar, Ohad and Pelillo, Marcello and Del Bue, Alessio},
 booktitle={NeurIPS},
 year={2024}
 }
