@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import os
 from PIL import Image
+from skimage.filters import gaussian
 
 def frag_area(path):
     """
@@ -202,3 +203,94 @@ def score_batch(batch):
         results.append([frag_dir, precision, recall, f1])
     results_df = pd.DataFrame(results, columns=['frag_dir', 'precision', 'recall', 'f1'])
     results_df.to_csv('scores.csv', index=False) 
+
+
+def expanded_mask(path, tsfm, canvas_size=(10000, 10000), sig=16):
+    """
+    Create a mask of a fragment expanded by a Gaussian blur.
+
+    Args:
+    -----
+    path: str
+        The path to the image file of the fragment.
+
+    tsfm: dict
+        A dictionary containing the transformation parameters of the fragment.
+
+    canvas_size: tuple
+        The size of the canvas to paste the fragment on.
+
+    sig: int
+        The standard deviation of the Gaussian blur.
+
+    Returns:
+    --------
+    mask: np.array
+        The mask of the fragment expanded by a Gaussian blur.
+    """
+    image = Image.open(path).convert('RGBA').resize((2000, 2000)).rotate(tsfm['rot'], expand=True)
+    canvas = Image.new('RGBA', canvas_size, (0, 0, 0, 0))
+    height, width = image.size
+    x, y = tsfm['offset']
+    x, y = np.round(x).astype(int) - (height // 2) + 2500, np.round(y).astype(int) - (width // 2) + 2500
+    canvas.paste(image, (x, y), image)
+    mask = np.array(canvas)[:, :, 3]
+    mask = gaussian(mask, sig)
+    return mask > 0
+
+
+def calc_adj_matrix(frag_paths, tsfm_path, csv_path='adj.csv', json_path='adj.json'):  
+    """
+    Calculate the adjacency matrix of a set of fragments.
+
+    Args:
+    -----
+    frag_paths: list
+        A list of paths to the fragment images.
+
+    tsfm_path: str
+        The path to the file containing the transformations of the fragments.
+
+    csv_path: str
+        The path to save the adjacency matrix as a CSV file.
+
+    json_path: str
+        The path to save the adjacency matrix as a JSON file.
+
+    Returns:
+    --------
+    adj: np.array
+        The adjacency matrix.
+    """
+    frag_paths.sort(key=lambda x: x.split('_')[1])
+    tsfms = [
+        {
+            'rpf': tsfm['rpf'],
+            'offset': (tsfm['x'], tsfm['y']),
+            'rot': tsfm['rot'],
+        }
+    for tsfm in pd.read_csv(tsfm_path).to_dict(orient='records')]
+    tsfms.sort(key=lambda x: x['rpf'])
+
+    masks = [expanded_mask(frag, tsfm) for frag, tsfm in zip(frag_paths, tsfms)]
+    n_frags = len(masks)
+    
+    adj = np.zeros((n_frags, n_frags))
+    for i in range(n_frags):
+        for j in range(i + 1, n_frags):
+            if np.sum(np.logical_and(masks[i], masks[j])) > 0:
+                adj[i, j] = adj[j, i] = 1
+
+    frag_names = ["RPf_" + path.split('\\')[-1].split('_')[1] for path in frag_paths]
+    if csv_path is not None:
+        adj_df = pd.DataFrame(adj, columns=frag_names, index=frag_names)
+        adj_df.to_csv(csv_path, index=False)
+
+    if json_path is None:
+        adj_dict = {}
+        for i, frag in enumerate(frag_names):
+            adj_dict[frag] = [frag_names[j] for j in range(n_frags) if adj[i, j] == 1]
+        with open(json_path, 'w') as f:
+            json.dump(adj_dict, f, indent=4)
+
+    return adj
