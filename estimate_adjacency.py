@@ -105,5 +105,7 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
+    os.makedirs(args.out_dir, exist_ok=True)
+
     process_batch(args.frag_dir, args.tsfm_dir, args.out_dir)
 
