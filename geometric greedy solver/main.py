@@ -13,6 +13,8 @@ from src.assembler import physical_assemler
 from src.assembler import restore_assembly_img
 import pandas as pd
 import matplotlib.pyplot as plt
+from pathlib import Path  
+
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--groups", help="RPobj_g1_o0001") # 
@@ -25,7 +27,6 @@ args = parser.parse_args()
 args_dict = vars(args)
 args_inputted = {key:val for key, val in args_dict.items() if not val is None}
 
-# groups = [eval(gr) for gr in args.groups.split(",")]
 groups = [gr for gr in args.groups.split(",")]
 
 print(f"Exploring groups {groups}")
@@ -84,21 +85,13 @@ while len(mating_graph.graph_.edges) > 0 and len(pieces_with_best_pairs) != len(
             best_pair = pair
             min_overlapping = overlapping
 
-    # best_pair = min(pair2overlapping.items(), key=lambda pair: pair[1])[0]
-    # poly1 = pair2response[best_pair]["piecesFinalCoords"][0]["coordinates"]
-    # poly2 = pair2response[best_pair]["piecesFinalCoords"][1]["coordinates"]
     best_pairs.append(best_pair)
     best_pair_parent1 = re.search("RPf_\d{5}",best_pair[0]).group(0)
     best_pair_parent2 = re.search("RPf_\d{5}",best_pair[1]).group(0)
     [pieces_with_best_pairs.append(parent) for parent in [best_pair_parent1,best_pair_parent2] if not parent in pieces_with_best_pairs]
     edges_to_remove = []
 
-    # for conf_pair in pairs2confs:
     for conf_pair in pair2overlapping.keys():
-        
-        # if conf_pair in best_pairs:
-        #     continue
-
         parent1 = re.search("RPf_\d{5}",conf_pair[0]).group(0)
         parent2 = re.search("RPf_\d{5}",conf_pair[1]).group(0)
 
@@ -110,11 +103,8 @@ while len(mating_graph.graph_.edges) > 0 and len(pieces_with_best_pairs) != len(
             edges_to_remove.append(conf_pair)
             continue
 
-    # mating_graph.remove_edges(edges_to_remove)
-
     for edge in edges_to_remove:
         del pair2overlapping[edge]
-        # del pairs2confs[edge]
 
 
 final_matings = []
@@ -137,9 +127,13 @@ response = physical_assemler.simulate(final_matings,collision="OffThenOn",isDebu
 #     plt.imshow(final_image)
 #     plt.show()
 
-
 final_transfomations = physical_assemler.get_final_transformations(response)
 
 df_output = pd.DataFrame(final_transfomations)
+
+# Create output directory if it doesn't exist
+output_path = Path(args_inputted["output_path"])
+output_path.parent.mkdir(parents=True, exist_ok=True)
+
 df_output.to_csv(args_inputted["output_path"],index=False)
 print("finished")

@@ -69,7 +69,7 @@ class Piece():
 
 def explore_group(group,pieces_images_path=None):
     if pieces_images_path is None:
-        pieces_images_path =f"{DIR_OF_PIECES_IMAGES}/{group}" #f"{DIR_OF_PIECES_IMAGES}/group_{group}"
+        pieces_images_path =f"{DIR_OF_PIECES_IMAGES}/*/{group}"
     pieces = []
 
     for piece_img_path in glob.glob(pieces_images_path+"/*"):
