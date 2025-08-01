@@ -1,5 +1,5 @@
 import sys
-sys.path.append("geometric greedy solver")
+sys.path.append("geometric_greedy_solver")
 
 import argparse
 from src.piece import explore_group,Piece

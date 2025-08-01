@@ -1,6 +1,6 @@
 import unittest
 import sys
-sys.path.append("geometric greedy solver")
+sys.path.append("geometric_greedy_solver")
 
 from src.assembler import physical_assemler 
 from src.assembler.my_http_client import SpringsHTTPClient

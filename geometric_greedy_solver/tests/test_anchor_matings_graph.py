@@ -1,6 +1,6 @@
 import unittest
 import sys
-sys.path.append("geometric greedy solver")
+sys.path.append("geometric_greedy_solver")
 
 from src.piece import Piece
 from src.arbitrary_anchors import mating_graph 

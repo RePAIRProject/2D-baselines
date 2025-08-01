@@ -1,6 +1,6 @@
 import unittest
 import sys
-sys.path.append("geometric greedy solver")
+sys.path.append("geometric_greedy_solver")
 
 import matplotlib.pyplot as plt
 from matplotlib.colors import Normalize

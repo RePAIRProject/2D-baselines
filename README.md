@@ -57,16 +57,16 @@ pip install -r  requirements.txt
 ### Geometric Greedy Solver
 1. **Start the server**:
    ```
-   "geometric greedy solver\start_springs_server.bat"
+   geometric_greedy_solver\start_springs_server.bat
    ```
 
 2. **Run the solver**:
    ```
-   python "geometric greedy solver"/main.py --group <GROUP_IDENTIFIER> --output_path <CSV_PATH>
+   python geometric_greedy_solver/main.py --group <GROUP_IDENTIFIER> --output_path <CSV_PATH>
    ```
    Example:
    ```
-   python "geometric greedy solver"/main.py --group RPobj_g1_o0001 --output_path results/RPobj_g1_o0001.txt
+   python geometric_greedy_solver/main.py --group RPobj_g1_o0001 --output_path results/RPobj_g1_o0001.txt
    ```
 
    **Optional Parameters**:

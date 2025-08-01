@@ -1,6 +1,6 @@
 import unittest
 import sys
-sys.path.append("geometric greedy solver")
+sys.path.append("geometric_greedy_solver")
 
 from src.assembler import restore_assembly_img 
 from src.piece import Piece
