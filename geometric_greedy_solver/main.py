@@ -84,17 +84,15 @@ while len(mating_graph.graph_.edges) > 0 and len(pieces_with_best_pairs) != len(
             min_overlapping = overlapping
 
     best_pairs.append(best_pair)
-    # Extract piece IDs from anchor configuration strings (format: "frag_PIECE_ID-...")
-    best_pair_parent1 = best_pair[0].split("-")[0].replace("frag_", "")
-    best_pair_parent2 = best_pair[1].split("-")[0].replace("frag_", "")
+    best_pair_parent1 = re.search("RPf_\d{5}", best_pair[0]).group(0)
+    best_pair_parent2 = re.search("RPf_\d{5}", best_pair[1]).group(0)
     [pieces_with_best_pairs.append(parent) for parent in [best_pair_parent1, best_pair_parent2] if
      not parent in pieces_with_best_pairs]
     edges_to_remove = []
 
     for conf_pair in pair2overlapping.keys():
-        # Extract piece IDs from anchor configuration strings (format: "frag_PIECE_ID-...")
-        parent1 = conf_pair[0].split("-")[0].replace("frag_", "")
-        parent2 = conf_pair[1].split("-")[0].replace("frag_", "")
+        parent1 = re.search("RPf_\d{5}", conf_pair[0]).group(0)
+        parent2 = re.search("RPf_\d{5}", conf_pair[1]).group(0)
 
         if (best_pair_parent1 == parent1 and best_pair_parent2 == parent2) or (
                 best_pair_parent1 == parent2 and best_pair_parent2 == parent1):
