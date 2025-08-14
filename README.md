@@ -62,16 +62,27 @@ pip install -r  requirements.txt
 
 2. **Run the solver**:
    ```
-   python geometric_greedy_solver/main.py --group <GROUP_IDENTIFIER> --output_path <CSV_PATH>
+   python geometric_greedy_solver/main.py --pieces_path <PIECES_FOLDER_PATH> --coordinates_path <COORDINATES_FOLDER_PATH> --output_path <CSV_PATH>
    ```
    Example:
    ```
-   python geometric_greedy_solver/main.py --group RPobj_g1_o0001 --output_path results/RPobj_g1_o0001.txt
+   python geometric_greedy_solver/main.py --pieces_path REPAIR_DATASET_NIPS_24/2D_Fragments/2D_Images/RPobj_g1_o0001 --coordinates_path geometric_greedy_solver/springs_server/data/RePAIR/csv --output_path results/RPobj_g1_o0001.csv
    ```
 
+   **Required Parameters**:
+   - `--pieces_path`: Path to the folder containing puzzle piece images (PNG files)
+   - `--coordinates_path`: Path to the folder containing piece coordinate CSV files
+   - `--output_path`: Path for the output CSV file containing the reconstruction results
+
    **Optional Parameters**:
-   - `--segmenting_curvedness_threshold`: Threshold for segmenting points (range: (0,1)).
-   - `--is_debug_final_assembly`: Enables viewing the final reconstruction.
+   - `--segmenting_curvedness_threshold`: Threshold for segmenting points (range: (0,1)), default: 0.1
+   - `--is_debug_final_assembly`: Enables viewing the final reconstruction
+
+   **Important Requirements**:
+   - The piece images and coordinate CSV files must be matched in alphabetical order
+   - Both folders must contain the same number of files
+   - Piece images should be PNG format
+   - Coordinate files should be CSV format with 'x' and 'y' columns
 
 ### Genetic Solver
 

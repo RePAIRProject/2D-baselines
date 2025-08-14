@@ -1,8 +1,9 @@
 import sys
+
 sys.path.append("geometric_greedy_solver")
 
 import argparse
-from src.piece import explore_group,Piece
+from src.piece import explore_group, Piece
 from src.arbitrary_anchors.anchor_conf import AnchorConf
 from src.arbitrary_anchors import mating_graph
 from src.arbitrary_anchors import recipes
@@ -13,27 +14,25 @@ from src.assembler import physical_assemler
 from src.assembler import restore_assembly_img
 import pandas as pd
 import matplotlib.pyplot as plt
-from pathlib import Path  
-
+from pathlib import Path
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--groups", help="RPobj_g1_o0001") # 
-parser.add_argument("--is_debug_final_assembly", action="store_true", help="Debug mode.",default=False)
-parser.add_argument("--segmenting_curvedness_threshold",default="0.1")
-parser.add_argument("--output_path")
+parser.add_argument("--pieces_path", required=True, help="Path to the folder containing puzzle piece images")
+parser.add_argument("--coordinates_path", required=True,
+                    help="Path to the folder containing piece coordinate CSV files")
+parser.add_argument("--is_debug_final_assembly", action="store_true", help="Debug mode.", default=False)
+parser.add_argument("--segmenting_curvedness_threshold", default="0.1")
+parser.add_argument("--output_path", required=True, help="Output path for the results CSV")
 
 args = parser.parse_args()
 
 args_dict = vars(args)
-args_inputted = {key:val for key, val in args_dict.items() if not val is None}
+args_inputted = {key: val for key, val in args_dict.items() if not val is None}
 
-groups = [gr for gr in args.groups.split(",")]
+print(f"Loading pieces from {args.pieces_path}")
+print(f"Loading coordinates from {args.coordinates_path}")
 
-print(f"Exploring groups {groups}")
-
-pieces = []
-for group in groups:
-    pieces+= explore_group(group)
+pieces = explore_group(args.pieces_path, args.coordinates_path)
 
 print("Segmenting")
 
@@ -42,22 +41,21 @@ curvedness_threshold = eval(args_inputted["segmenting_curvedness_threshold"])
 segmenting_points_to_index = {}
 
 for piece in pieces:
-    contour  = piece.get_polygon()
+    contour = piece.get_polygon()
     segmenting_points = piece.segment_polygon_by_curvedness()
     num_segmenting_points = len(segmenting_points)
-    
+
     for ii in range(num_segmenting_points):
         segmenting_point_1 = segmenting_points[ii].tolist()
-        segmenting_point_2 = segmenting_points[(ii+1)%num_segmenting_points].tolist()
-        
+        segmenting_point_2 = segmenting_points[(ii + 1) % num_segmenting_points].tolist()
+
         segmenting_points_to_index[str(segmenting_point_1)] = ii
-        segmenting_points_to_index[str(segmenting_point_2)] = (ii+1)%num_segmenting_points
+        segmenting_points_to_index[str(segmenting_point_2)] = (ii + 1) % num_segmenting_points
 
-        anchors = [segmenting_point_1,segmenting_point_2]
-        anchor_confs.append(AnchorConf(anchors,piece))
-        anchor_confs.append(AnchorConf(list(reversed(anchors)),piece))
+        anchors = [segmenting_point_1, segmenting_point_2]
+        anchor_confs.append(AnchorConf(anchors, piece))
+        anchor_confs.append(AnchorConf(list(reversed(anchors)), piece))
 
-        
 print("Compute the mating graph")
 
 mating_graph.initGraph(anchor_confs)
@@ -67,7 +65,7 @@ total_pieces_names = [piece.piece_id for piece in pieces]
 pairs2confs = mating_graph.get_confs_pairing()
 pair2response = recipes.simulate(pairs2confs)
 
-for p,res in pair2response.items():
+for p, res in pair2response.items():
     assert not res["piecesFinalCoords"][0]["coordinates"][0][0] is None is None, f"{p} is problematic"
 
 pair2overlapping = compatibilities.overlapping(pair2response)
@@ -76,7 +74,7 @@ while len(mating_graph.graph_.edges) > 0 and len(pieces_with_best_pairs) != len(
     best_pair = None
     min_overlapping = 999999999999
 
-    for pair,overlapping in pair2overlapping.items():
+    for pair, overlapping in pair2overlapping.items():
 
         if pair in best_pairs:
             continue
@@ -86,16 +84,18 @@ while len(mating_graph.graph_.edges) > 0 and len(pieces_with_best_pairs) != len(
             min_overlapping = overlapping
 
     best_pairs.append(best_pair)
-    best_pair_parent1 = re.search("RPf_\d{5}",best_pair[0]).group(0)
-    best_pair_parent2 = re.search("RPf_\d{5}",best_pair[1]).group(0)
-    [pieces_with_best_pairs.append(parent) for parent in [best_pair_parent1,best_pair_parent2] if not parent in pieces_with_best_pairs]
+    best_pair_parent1 = re.search("RPf_\d{5}", best_pair[0]).group(0)
+    best_pair_parent2 = re.search("RPf_\d{5}", best_pair[1]).group(0)
+    [pieces_with_best_pairs.append(parent) for parent in [best_pair_parent1, best_pair_parent2] if
+     not parent in pieces_with_best_pairs]
     edges_to_remove = []
 
     for conf_pair in pair2overlapping.keys():
-        parent1 = re.search("RPf_\d{5}",conf_pair[0]).group(0)
-        parent2 = re.search("RPf_\d{5}",conf_pair[1]).group(0)
+        parent1 = re.search("RPf_\d{5}", conf_pair[0]).group(0)
+        parent2 = re.search("RPf_\d{5}", conf_pair[1]).group(0)
 
-        if (best_pair_parent1 == parent1 and best_pair_parent2 == parent2) or (best_pair_parent1 == parent2 and best_pair_parent2 == parent1): 
+        if (best_pair_parent1 == parent1 and best_pair_parent2 == parent2) or (
+                best_pair_parent1 == parent2 and best_pair_parent2 == parent1):
             edges_to_remove.append(conf_pair)
             continue
 
@@ -106,17 +106,15 @@ while len(mating_graph.graph_.edges) > 0 and len(pieces_with_best_pairs) != len(
     for edge in edges_to_remove:
         del pair2overlapping[edge]
 
-
 final_matings = []
 
 for pair in best_pairs:
     conf = pairs2confs[pair]
     final_matings += recipes.conf_to_matings_(*conf)
 
-
 print("Compute the final assembly")
 
-response = physical_assemler.simulate(final_matings,collision="OffThenOn",isDebug=args.is_debug_final_assembly)
+response = physical_assemler.simulate(final_matings, collision="OffThenOn", isDebug=args.is_debug_final_assembly)
 
 # if args.is_debug_final_assembly:
 
@@ -135,5 +133,5 @@ df_output = pd.DataFrame(final_transfomations)
 output_path = Path(args_inputted["output_path"])
 output_path.parent.mkdir(parents=True, exist_ok=True)
 
-df_output.to_csv(args_inputted["output_path"],index=False)
+df_output.to_csv(args_inputted["output_path"], index=False)
 print("finished")
