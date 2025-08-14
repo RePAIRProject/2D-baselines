@@ -66,7 +66,7 @@ pip install -r  requirements.txt
    ```
    Example:
    ```
-   python geometric_greedy_solver/main.py --pieces_path REPAIR_DATASET_NIPS_24/2D_Fragments/2D_Images/RPobj_g1_o0001 --coordinates_path geometric_greedy_solver/springs_server/data/RePAIR/csv --output_path results/RPobj_g1_o0001.csv
+   python geometric_greedy_solver/main.py --pieces_path REPAIR_DATASET_NIPS_24/2D_Fragments/2D_Images/assembled_objects/RPobj_g1_o0001 --coordinates_path geometric_greedy_solver/springs_server/data/RePAIR/csv --output_path results/RPobj_g1_o0001.csv
    ```
 
    **Required Parameters**:
