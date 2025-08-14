@@ -6,7 +6,6 @@ from shapely import Polygon as ShapelyPolygon
 import pandas as pd
 from numpy import pi
 import glob
-import re
 
 
 class Piece():
@@ -72,14 +71,10 @@ def explore_group(pieces_path, coordinates_path):
     # Extract piece names from PNG files
     piece_names = []
     for img_path in piece_img_paths:
-        img_filename = img_path.split("/")[-1]
-        # Extract piece name from the filename (adjust pattern if needed)
-        piece_match = re.search(r"RPf_\d{5}", img_filename)
-        if piece_match:
-            piece_name = piece_match.group(0)
-        else:
-            # Fallback: use filename without extension as piece name
-            piece_name = img_filename.replace(".png", "").replace("_intact_mesh", "")
+        # Handle both Unix (/) and Windows (\) path separators
+        img_filename = img_path.replace("\\", "/").split("/")[-1]
+        # Use filename without extension as piece name (works for any naming convention)
+        piece_name = img_filename.replace(".png", "").replace("_intact_mesh", "")
         piece_names.append(piece_name)
 
     # Get all CSV files in the coordinates directory
@@ -87,13 +82,19 @@ def explore_group(pieces_path, coordinates_path):
 
     # Filter CSV files to match only the piece names found in PNG files
     coord_csv_paths = []
-    for piece_name in piece_names:
+    for i, piece_name in enumerate(piece_names):
         matching_csv = None
         for csv_path in all_coord_csv_paths:
-            csv_filename = csv_path.split("/")[-1]
+            # Handle both Unix (/) and Windows (\) path separators
+            csv_filename = csv_path.replace("\\", "/").split("/")[-1]
             if piece_name in csv_filename:
                 matching_csv = csv_path
                 break
+
+        # If no matching CSV found by name, try alphabetical matching for simple test datasets
+        if matching_csv is None and i < len(all_coord_csv_paths):
+            matching_csv = all_coord_csv_paths[i]
+            print(f"Warning: No name-based match for piece '{piece_name}', using alphabetical match: {matching_csv}")
 
         if matching_csv is None:
             raise ValueError(f"No matching CSV file found for piece: {piece_name}")

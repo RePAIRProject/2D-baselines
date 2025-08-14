@@ -80,9 +80,17 @@ pip install -r  requirements.txt
 
    **Important Requirements**:
    - The piece images and coordinate CSV files must be matched in alphabetical order
-   - Both folders must contain the same number of files
    - Piece images should be PNG format
    - Coordinate files should be CSV format with 'x' and 'y' columns
+
+   **Important Requirements for datasets that are not RePAIR**:
+   - Move/delete 'csv' and 'images' folders in geometric_greedy_solver/springs_server/data/RePAIR.
+   - Copy all of your fragments (PNGs) to geometric_greedy_solver/springs_server/data/RePAIR/images and add the suffix '_intact_mesh'
+   - Copy and rename all of the coordinates csv files to match the images inside the 'images' folder and move them to geometric_greedy_solver/springs_server/data/RePAIR/csv.
+   - For example - if there is an image named f1_intact_mesh.png inside the 'images' folder than there must be a file named 'f1_intact_mesh.csv' in the 'csv' folder.
+
+
+
 
 ### Genetic Solver
 
